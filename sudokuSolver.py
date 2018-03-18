@@ -55,11 +55,35 @@ class sudokuBoard():
             return -1
         else:
             return 0;
+"""
+>>> dicts = [
+...     { "name": "Tom", "age": 10 },
+...     { "name": "Mark", "age": 5 },
+...     { "name": "Pam", "age": 7 },
+...     { "name": "Dick", "age": 12 }
+... ]
 
+>>> (item for item in dicts if item["name"] == "Pam").next()
+{'age': 7, 'name': 'Pam'}
+"""
+class dictBoardState(boardState):
+    def __init__(self):
+        for i in range(9):
+            for j in range(9):
+                d = {   'x'=i,
+                        'y'=j
+                        'sec_x' = int(i/3),
+                        'sec_y' = int(j/3),
+                        'len' = 9
+                        'values'=range(9)
+                        }
+                self.boardState.extend(d)
+    def remove(self,x,y,value):
+    def getMove(self):
+        return self.boardState[0]
 class boardState():
     def __init__(self):
         self.boardState=[[range(1,10) for x in range(9)] for y in range(9)]
-
     def remove(self,x,y,value):
         print "Removing State: boardState[{}][{}]={}".format(x,y,value)
         self.boardState[x][y] = []
@@ -97,6 +121,13 @@ class boardState():
                     return (i,j,self.boardState[i][j][0])
         return (-1,-1,0)
 
+    def isDone(self):
+        for i in range(9):
+            for j in range(9):
+                if len(self.boardState[i][j]) != 0:
+                    return False
+        else:
+            return True
 def main():
     print "Starting Sudoku solver!"
     board = sudokuBoard()
@@ -116,16 +147,17 @@ def main():
         x,y,value = state.getMove()
         print x,y,value
         if x == -1 or y == -1:
-            notDone = True;
-            break;
-        raw_input("Insert Board[{}][{}] =  {} ?...".format(x,y,value))
-        board.insert(x,y,value)
-        state.remove(x,y,value)
+            print "Out of moves dimple moves"
+            done  = True;
+        else: 
+            raw_input("Insert Board[{}][{}] =  {} ?...".format(x,y,value))
+            board.insert(x,y,value)
+            state.remove(x,y,value)
 
         board.printBoard()
 
-    print "Done"
     board.printBoard()
+    print "Done? ", state.isDone()
 
 if __name__ == "__main__":
     main()
